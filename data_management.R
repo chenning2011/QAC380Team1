@@ -10,7 +10,7 @@ require(tidyr)
 require(descr)
 require(gert)
 
-#working on subsetting
+#working on subsetting the data
 myvars <- c("Record ID", "Age", "What is your current gender identity?", "Other gender identity",
             "Which of these best describes your sexual orientation?", "Other sexual orientation",
             "What is your race? (choice=White)", "What is your race (choice=Black or African American)",
