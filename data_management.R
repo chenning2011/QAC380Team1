@@ -21,4 +21,9 @@ HHS <-HHSNeedsAssessment_FINAL_DATA[myvars]
 #replacing NA values with Open Door Health for clinic name 
 HHS$`Which clinic are currently visiting?`[is.na(HHS$`Which clinic are currently visiting?`)] <- "Open Door Health"
 
-#next steps for data management here
+#data management for gender to combine columns  
+HHS <- mutate(HHS, `Gender Identity` = ifelse(`What is your current gender identity?`=="Other (Please specify): {other_gender_identity}", `Other gender identity`, `What is your current gender identity?`) )
+
+#data management for sexuality to combine columns 
+HHS <- mutate(HHS, `Sexual Orientation` = ifelse(`Which of these best describes your sexual orientation?`=="Other (Please specify): {other_sexual_orientation}", `Other sexual orientation`, `Which of these best describes your sexual orientation?`) )
+
