@@ -4,6 +4,10 @@ library(readxl)
 #caleb load line
 HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Folder/University/Junior Year/F23/QAC380/HHSNeedsAssessment FINAL DATA.xlsx")
 
+#sam load line
+> Copy_of_HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Desktop - Samantha’s MacBook Air/Wesleyan Semesters/Fall 2023/QAC380/Copy of HHSNeedsAssessment FINAL DATA.xlsx")
+
+
 require(tidyverse)
 
 #taking a subset of the data
