@@ -27,3 +27,5 @@ HHS <- mutate(HHS, `Gender Identity` = ifelse(`What is your current gender ident
 #data management for sexuality to combine columns 
 HHS <- mutate(HHS, `Sexual Orientation` = ifelse(`Which of these best describes your sexual orientation?`=="Other (Please specify): {other_sexual_orientation}", `Other sexual orientation`, `Which of these best describes your sexual orientation?`) )
 
+#removing all the rows that don't have any data in them 
+
