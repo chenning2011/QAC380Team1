@@ -30,15 +30,19 @@ HHS <- mutate(HHS, `Gender Identity` = ifelse(`What is your current gender ident
 #data management for sexuality to combine columns 
 HHS <- mutate(HHS, `Sexual Orientation` = ifelse(`Which of these best describes your sexual orientation?`=="Other (Please specify): {other_sexual_orientation}", `Other sexual orientation`, `Which of these best describes your sexual orientation?`) )
 
-#removing all invalid responses
+#changing all of the names for beau
 subvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age", 
              "What is your race? (choice=White)", "What is your race? (choice=Black or African American)",
              "What is your race? (choice=American Indian or Alaska Native)", 
              "What is your race? (choice=Native Hawaiian or other Pacific Islander)",
-             "What is your race? (choice=Asian)",
+             "What is your race? (choice=Asian)","Other race",
              "Are you Hispanic/Latinx?", "What is the highest education level you have completed?",
              "Biggest health concern", "How could clinics help","Which clinic are currently visiting?")
-HHS2 <- HHS[subvars]
+HHS <- HHS[subvars]
+names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "Black", "Native American",
+           "Native Hawaiian", "Asian", "Other race", "Hispanic/Latinx", "Education level",
+           "Biggest health concern", "How could clinics help", "Clinic")
 
+#removing all invalid responses - will update with new variable names after Beau does race variable
 Missing <- is.na(HHS2$Age) & is.na(HHS2$`Are you Hispanic/Latinx?`) & is.na(HHS2$`What is the highest education level you have completed?`)
 HHS <- subset(HHS2, subset=!Missing)
