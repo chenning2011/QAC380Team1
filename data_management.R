@@ -4,9 +4,8 @@ library(readxl)
 #caleb load line
 HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Folder/University/Junior Year/F23/QAC380/HHSNeedsAssessment FINAL DATA.xlsx")
 
-#sam load line
-> Copy_of_HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Desktop - Samantha’s MacBook Air/Wesleyan Semesters/Fall 2023/QAC380/Copy of HHSNeedsAssessment FINAL DATA.xlsx")
-
+#sam load line 
+#Copy_of_HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Desktop - Samantha’s MacBook Air/Wesleyan Semesters/Fall 2023/QAC380/Copy of HHSNeedsAssessment FINAL DATA.xlsx")
 
 require(tidyverse)
 
@@ -31,5 +30,15 @@ HHS <- mutate(HHS, `Gender Identity` = ifelse(`What is your current gender ident
 #data management for sexuality to combine columns 
 HHS <- mutate(HHS, `Sexual Orientation` = ifelse(`Which of these best describes your sexual orientation?`=="Other (Please specify): {other_sexual_orientation}", `Other sexual orientation`, `Which of these best describes your sexual orientation?`) )
 
-#removing all the rows that don't have any data in them 
+#removing all invalid responses
+subvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age", 
+             "What is your race? (choice=White)", "What is your race? (choice=Black or African American)",
+             "What is your race? (choice=American Indian or Alaska Native)", 
+             "What is your race? (choice=Native Hawaiian or other Pacific Islander)",
+             "What is your race? (choice=Asian)",
+             "Are you Hispanic/Latinx?", "What is the highest education level you have completed?",
+             "Biggest health concern", "How could clinics help","Which clinic are currently visiting?")
+HHS2 <- HHS[subvars]
 
+Missing <- is.na(HHS2$Age) & is.na(HHS2$`Are you Hispanic/Latinx?`) & is.na(HHS2$`What is the highest education level you have completed?`)
+HHS <- subset(HHS2, subset=!Missing)
