@@ -45,5 +45,5 @@ names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "B
            "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality")
 
 #removing all invalid responses - will update with new variable names after Beau does race variable
-#Missing <- is.na(HHS2$Age) & is.na(HHS2$`Are you Hispanic/Latinx?`) & is.na(HHS2$`What is the highest education level you have completed?`)
+#Missing <- is.na(HHS2$Age) & is.na(HHS2$Hispanic/Latinx) & is.na(HHS2$`Education level`)
 #HHS <- subset(HHS2, subset=!Missing)
