@@ -104,6 +104,7 @@ HHS$Race[HHS$Race==3] <- "Native American/Alaska Native"
 HHS$Race[HHS$Race==4] <- "Native Hawaiian/Pacific Islander"
 HHS$Race[HHS$Race==5] <- "Asian"
 HHS$Race[HHS$Race==6] <- "Other"
+
 #current issue: there is at least one person in the dataset that is white and categorized as so, but is also hispanic/latinx. not sure what to do with that. could keep hispanic/latinx variable in to help fix? will work on this later b/c it's good enough for now
 
 #setting decline to answer to missing
@@ -144,11 +145,38 @@ ggplot(data = filtered_data, aes(x = `Education level`, y = Age)) +
   theme_minimal()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-#frequency tables 
+#Distribution of race
+ggplot(data=subset(HHS, !is.na(Race)), aes(x=Race,fill=Race))+
+  geom_bar()+
+  labs(title="Distribution of Racial Categories (including Hispanic/Latinx)",
+       x="Racial Category",
+       y="Count")+
+  theme_minimal()+
+  theme(legend.position="none", axis.text.x = element_text(angle = 50, hjust = 1))
 
+#Gender and Sexuality relationship just for funsies
+ggplot(data=subset(HHS, !is.na(Gender) & !is.na(Sexuality)), aes(x=Gender,fill=Sexuality))+
+  geom_bar()+
+  labs(title="Relationship between Gender and Sexuality",
+       x="Gender",
+       y="Count")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 50, hjust = 1))
 
-
-
+#frequency tables/descriptive stats
+require(descr)
+#race
+freq(HHS$Race)
+#gender
+freq(HHS$Gender)
+#age
+summary(HHS$Age) 
+mean(HHS$Age, na.rm = TRUE) 
+sd(HHS$Age, na.rm = TRUE)
+#sexuality
+freq(HHS$Sexuality)
+#education level
+freq(HHS$`Education level`)
 
 
 
