@@ -46,6 +46,8 @@ HHS <- HHS[subvars]
 names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "Black", "Native American",
            "Native Hawaiian", "Asian", "Other race", "Hispanic/Latinx", "Education level",
            "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality")
+#dropping people under the age of 18
+HHS$Age[HHS$Age < 18] <- NA
 
 #removing all invalid responses - will update with new variable names after Beau does race variable
 Missing <- is.na(HHS$Age) & is.na(HHS$`Hispanic/Latinx`) & is.na(HHS$`Education level`)
