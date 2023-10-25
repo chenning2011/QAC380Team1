@@ -19,6 +19,8 @@ myvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age", "What is
             "What is your race? (choice=American Indian or Alaska Native)", 
             "What is your race? (choice=Native Hawaiian or other Pacific Islander)",
             "What is your race? (choice=Asian)",
+            "What is your annual household income before taxes)?", "Household size",
+            "Were you born in the United States?", "Country of birth",
             "Other race","Are you Hispanic/Latinx?", "What is the highest education level you have completed?",
             "Biggest health concern", "How could clinics help","Which clinic are currently visiting?"
             )
@@ -33,19 +35,23 @@ HHS <- mutate(HHS, `Gender Identity` = ifelse(`What is your current gender ident
 #data management for sexuality to combine columns 
 HHS <- mutate(HHS, `Sexual Orientation` = ifelse(`Which of these best describes your sexual orientation?`=="Other (Please specify): {other_sexual_orientation}", `Other sexual orientation`, `Which of these best describes your sexual orientation?`) )
 
+#data management for country of birth to combine columns
+HHS <- mutate(HHS, `Country of Birth` = ifelse(`Were you born in the United States?`=="No",`Country of birth`,"United States"))
+
 #changing all of the names for beau
 subvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age", 
              "What is your race? (choice=White)", "What is your race? (choice=Black or African American)",
              "What is your race? (choice=American Indian or Alaska Native)", 
              "What is your race? (choice=Native Hawaiian or other Pacific Islander)",
              "What is your race? (choice=Asian)","Other race",
+             "What is your annual household income before taxes)?", "Household size",
              "Are you Hispanic/Latinx?", "What is the highest education level you have completed?",
              "Biggest health concern", "How could clinics help","Which clinic are currently visiting?",
-             "Gender Identity", "Sexual Orientation")
+             "Gender Identity", "Sexual Orientation", "Country of Birth")
 HHS <- HHS[subvars]
 names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "Black", "Native American",
-           "Native Hawaiian", "Asian", "Other race", "Hispanic/Latinx", "Education level",
-           "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality")
+           "Native Hawaiian", "Asian", "Other race", "Household Income", "Household Size","Hispanic/Latinx", "Education level",
+           "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality", "Country of Birth")
 #dropping people under the age of 18
 HHS$Age[HHS$Age < 18] <- NA
 
@@ -114,12 +120,12 @@ HHS$`Hispanic/Latinx`[HHS$`Hispanic/Latinx` == "Decline to answer"] <- NA
 HHS$`Education level`[HHS$`Education level` == "Decline to answer"] <- NA
 HHS$`Sexuality`[HHS$`Sexuality` == "Decline to answer"] <- NA
 HHS$`Gender`[HHS$`Gender` == "Decline to answer"] <- NA
+HHS$`Household Income`[HHS$`Household Income` == "Decline to answer"] <- NA
 
 #taking a final subset of variables with everything data managed
-finalsub <- c("Record ID", "Survey timestamp", "Complete?","Education level", "Age",
-              "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality", "Race")
+finalsub <- c("Record ID", "Survey timestamp", "Complete?","Education level", "Age", "Household Income", "Household Size",
+              "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality", "Race", "Country of Birth")
 HHS <- HHS[finalsub]
-
 
 ################## CODE FOR VISUALS ############################
 require(ggplot2)
