@@ -127,6 +127,18 @@ finalsub <- c("Record ID", "Survey timestamp", "Complete?","Education level", "A
               "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality", "Race", "Country of Birth")
 HHS <- HHS[finalsub]
 
+#collapsing gender categories
+HHS$Gender[HHS$Gender == "Agender" | HHS$Gender == "Nonbinary" | HHS$Gender == "nonbinary transmasculine" | HHS$Gender == "Queer Nonbinary" | HHS$Gender == "trans"] <- "Genderqueer, neither exclusively man nor woman"
+HHS$Gender[HHS$Gender == "Woman but it means so much less than society thinks it does."] <- "Woman"
+
+#collapsing sexuality categories 
+HHS$Sexuality[HHS$Sexuality == "homoflexible" | HHS$Sexuality == "Estoy definido como hombre"] <- "Homosexual, gay or same gender loving"
+HHS$Sexuality[HHS$Sexuality == "Me gusta la mujere" | HHS$Sexuality == "Straight"] <- "Heterosexual or straight"
+HHS$Sexuality[HHS$Sexuality == "Bisexual" | HHS$Sexuality == "Pansexual"] <- "Bisexual/Pansexual"
+HHS$Sexuality[HHS$Sexuality == "Demisexual" | HHS$Sexuality == "Asexual"] <- "Queer"
+
+freq(HHS$Sexuality)
+
 ################## CODE FOR VISUALS ############################
 require(ggplot2)
 
