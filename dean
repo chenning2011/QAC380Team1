@@ -132,6 +132,50 @@ HHS$Gender[HHS$Gender == "Agender" | HHS$Gender == "Nonbinary" | HHS$Gender == "
 HHS$Gender[HHS$Gender == "Woman but it means so much less than society thinks it does."] <- "Woman"
 
 #collapsing sexuality categories 
+HHS$Sexuality[HHS$Sexuality == "homoflexible" | HHS$Sexuality == "Estoy definido como hombre"] <- "Homosexual, gay or same gender loving"
+HHS$Sexuality[HHS$Sexuality == "Me gusta la mujere" | HHS$Sexuality == "Straight"] <- "Heterosexual or straight"
+HHS$Sexuality[HHS$Sexuality == "Bisexual" | HHS$Sexuality == "Pansexual"] <- "Bisexual/Pansexual"
+HHS$Sexuality[HHS$Sexuality == "Demisexual" | HHS$Sexuality == "Asexual"] <- "Queer"
+
+freq(HHS$`Household Size`)
+freq(HHS$`Country of Birth`)
+
+#collapsing country of birth categories
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("11/25/1986 Republica Dominica", "Dom rep", "Dom Rep",
+                                                      "Dom. Rep.", "Dominacn Republic", "Dominican", "Dominican Rep",
+                                                      "dominican republic", "Domincan Republic","Dominican republic",
+                                                      "Dominican República", "Dominican Rwpublic", "dominicana", "Dominicana",
+                                                      "Dominicano", "dR", "Dr", "DR", "En dominicana", "En Republica dominicana",
+                                                      "R.D.", "Rd", "RD", "RD.. 6-24-1981", "Rep dom", "Rep Dom", 
+                                                      "Rep. Dom", "República D", "Republica Domicana","Republica dominicana",
+                                                      "Republica Dominicana", "REPUBLICA Dominicana", "República dominicana",
+                                                      "República Dominicana", "Bonao", "Thé Dominican Republic",
+                                                      "Puerto plata", "Sto dgo", "Santo domingo", "Santo Domingo",
+                                                     "Santos domingo", "Santos Domingo")] <- "Dominican Republic"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Brasil"] <- "Brazil"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Cabo verde", "Cabo Verde", "Cape Verde", "Cape verde")] <- "Republic of Cabo Verde"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Cali", "colombia", "Columbia", "Medellin")] <- "Colombia"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Caguas PR", "PR", "Puerto rico", "Puertorico")] <- "Puerto Rico"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Costa de marfil"] <- "Ivory Coast"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="cuba"]<- "Cuba"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Ecuador- guayaquil"] <- "Ecuador"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="El salvador"|HHS$`Country of Birth`=="San Salvador"] <- "El Salvador"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Guatemalteca", "Guatemalteco", "Guatemela")] <- "Guatemala"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Guinee"] <- "Guinea"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Haití"] <- "Haiti"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Liberia Africa"] <- "Liberia"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="México"] <- "Mexico"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="USVI"] <- "US Virgin Islands"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Africa"] <- "Other African Country"
+
+#translating how clinics could help column 
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ya me están ayudando"]<- "They’re already helping me"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayuda en linea para la salud mental"]<- "Online Help for Mental Health"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Asesores en español"]<- "Advisors in Spanish"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Estoy conforme gracias"]<- "I'm happy thank you"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="nada"] <- "Nothing"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="estoy bien"] <- "I'm fine"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="estoy bien"] <- "I'm fine"
 
 
 ################## CODE FOR VISUALS ############################
@@ -193,6 +237,10 @@ freq(HHS$Sexuality)
 #education level
 freq(HHS$`Education level`)
 
+############ DESCRIPTIVE STATS TABLE ###################
+require(table1)
+table1::table1(~`Education level` + Age + `Household Income` + `Household Size` + Gender + Sexuality, data=HHS)
+table1::table1(~`Country of Birth`, data=HHS)
 
 
 
