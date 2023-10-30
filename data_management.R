@@ -55,11 +55,6 @@ names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "B
 #dropping people under the age of 18
 HHS$Age[HHS$Age < 18] <- NA
 
-#removing all invalid responses - will update with new variable names after Beau does race variable
-Missing <- is.na(HHS$Age) & is.na(HHS$`Hispanic/Latinx`) & is.na(HHS$`Education level`)
-HHS <- subset(HHS, subset=!Missing)
-
-#creating a results vector which will function as the new variable
 HHS$Race <- numeric(nrow(HHS))
 
 #recoding checked/unchecked to 1/0 for each variable
@@ -100,6 +95,49 @@ for (i in 1:nrow(HHS)) {
   }
 }
 head(results)
+
+#cuts "other race" down to 21 categories 
+for(i in 1:nrow(HHS)) {
+  Otherrace <- (HHS$`Other race`[i]) 
+  if(Otherrace %in% c("La tina", "Latino/ hispano", "latino","latina", "hispanic latino", "hispanic/latina", 
+                      "latin", "hispano", "hispanos", "hispanic", "Hispana", "Ispano", "Spanish", "Ispana", 
+                      "Latino", "Hispanic", "Hispanic Latino", "Hispanic/Latina", "Hispanos", "Latina", "Hispano", "Latin")) {
+    HHS$`Other race`[i] <- "Hispanic/Latinx"
+  }
+  if(Otherrace %in% c("República dominicana", "Republics dominicana", "Dominican Republic", "Dominicana", "Dominicano", "Diminicano", "Santo domingo", 
+                      "Dominican", "Santo Domingo")){
+    HHS$`Other race`[i] <- "Dominican"
+  }
+  if(Otherrace %in% c("Cape Verdean", "Cape verde", "Cabo Verde", "Cape verdean")){
+    HHS$`Other race`[i] <- "Cape Verdean"
+  }
+  if(Otherrace %in% c("Guatemalteca", "Guatemala", "Guatemalan")){
+    HHS$`Other race`[i] <- "Guatemalan"
+  }
+  if(Otherrace %in% c("Mexico", "Mexican")){
+    HHS$`Other race`[i] <- "Mexican"
+  }
+  if(Otherrace %in% c("Puerto Rico", "Puerto rico", "Puerto Rican")){
+    HHS$`Other race`[i] <- "Puerto Rican"
+  }
+  if(Otherrace %in% c("Idk", "Human", "Humano", "Usa", "pansexual")){
+    HHS$`Other race`[i] <- "Invalid/miscategorized response"
+  }
+  if(Otherrace %in% c("Multiracial", "Mix", "Mixed", "Native South American and Caribbean", "I'm PR & CV", 
+                      "Italian and Puerto Rican", "Indian Asian", "Mulato")){
+    HHS$`Other race`[i] <- "Multiracial"
+  }
+  if(Otherrace %in% c("Centro americana", "Maya")){
+    HHS$`Other race`[i] <- "Central American"
+  }
+}
+unique(HHS$`Other race`)
+#prints the categories of "other race"
+print(length(unique(HHS$`Other race`)))
+head(results, 30)
+frequency_table <- table(results)
+frequency_num <- frequency_table[2]
+print(frequency_table)
 # Access and print the value of a variable for a specific row
 
 #adding other race variable into the race variable, relabelling the numbers with category names
@@ -113,7 +151,13 @@ HHS$Race[HHS$Race==4] <- "Native Hawaiian/Pacific Islander"
 HHS$Race[HHS$Race==5] <- "Asian"
 HHS$Race[HHS$Race==6] <- "Other"
 
-#current issue: there is at least one person in the dataset that is white and categorized as so, but is also hispanic/latinx. not sure what to do with that. could keep hispanic/latinx variable in to help fix? will work on this later b/c it's good enough for now
+#updating spanish names in race variable to english names 
+HHS$Race[HHS$Race=="Caribeña"] <- "Caribbean"
+HHS$Race[HHS$Race=="Indio mexicano"] <- "Mexican Indian"
+
+#removing all invalid responses 
+Missing <- is.na(HHS$Age) & is.na(HHS$`Hispanic/Latinx`) & is.na(HHS$`Education level`)
+HHS <- subset(HHS, subset=!Missing)
 
 #setting decline to answer to missing
 HHS$`Hispanic/Latinx`[HHS$`Hispanic/Latinx` == "Decline to answer"] <- NA
