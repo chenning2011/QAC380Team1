@@ -166,7 +166,7 @@ HHS$`Country of Birth`[HHS$`Country of Birth`=="Haití"] <- "Haiti"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="Liberia Africa"] <- "Liberia"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="México"] <- "Mexico"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="USVI"] <- "US Virgin Islands"
-
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Africa"] <- "Other African Country"
 
 ################## CODE FOR VISUALS ############################
 require(ggplot2)
@@ -227,6 +227,10 @@ freq(HHS$Sexuality)
 #education level
 freq(HHS$`Education level`)
 
+############ DESCRIPTIVE STATS TABLE ###################
+require(table1)
+table1::table1(~`Education level` + Age + `Household Income` + `Household Size` + Gender + Sexuality, data=HHS)
+table1::table1(~`Country of Birth`, data=HHS)
 
 
 
