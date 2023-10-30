@@ -6,11 +6,14 @@ HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Folder/University/Junior 
 
 #sam load line 
 HHSNeedsAssessment_FINAL_DATA <- read_excel("~/Desktop/Desktop - Samantha’s MacBook Air/Wesleyan Semesters/Fall 2023/QAC380/Copy of HHSNeedsAssessment FINAL DATA.xlsx")
+#beau load line
+HHSNeedsAssessment_FINAL_DATA <- read_excel("/Users/beaugallacher-hacken/Desktop/PatientNeeds.xlsx", sheet = 2)
 
 #dean load line
 HHSNeedsAssessment_FINAL_DATA <- read_excel("HHSNeedsAssessment FINAL DATA.xlsx", +     sheet = "HHSNeedsAssessmentSu_DATA_LABEL")
 
 require(tidyverse)
+
 
 #taking a subset of the data
 myvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age", "What is your current gender identity?", "Other gender identity",
@@ -55,7 +58,94 @@ names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "B
 #dropping people under the age of 18
 HHS$Age[HHS$Age < 18] <- NA
 
+#creating a results vector which will function as the new variable
+results <- numeric(nrow(HHS))
+
+#recoding checked/unchecked to 1/0 for each variable
+RWhite <- as.numeric(HHS$White == "Checked")
+RBlack <- as.numeric(HHS$Black == "Checked")
+RNative_American <- as.numeric(HHS$"Native American" == "Checked")
+RNative_Hawaiian <- as.numeric(HHS$"Native Hawaiian" == "Checked")
+RAsian <- as.numeric(HHS$Asian == "Checked")
+RLatin <- as.numeric(HHS$'Hispanic/Latinx' == "Yes")
+#this loop is the most disgusting thing I've ever coded, but I can't figure out dictionaries in R and this works
+#basically it checks if 1, and only 1 of the questions is checked, then codes a number 2-6 correlating to the checked variable
+# 0 = more than one checked, 2 = white, 3 = African american 4 = Native American, 5 = Native Hawaiian, 6 = Asian, 7 = none checked. 
+
+for (i in 1:nrow(HHS)) {
+  combined_var <- ifelse((RWhite[i] == 1 & RBlack[i] == 0 & RNative_American[i] == 0 & RNative_Hawaiian[i] == 0 & RAsian[i] == 0) |
+                           (RWhite[i] == 0 & RBlack[i] == 1 & RNative_American[i] == 0 & RNative_Hawaiian[i] == 0 & RAsian[i] == 0) |
+                           (RWhite[i] == 0 & RBlack[i] == 0 & RNative_American[i] == 1 & RNative_Hawaiian[i] == 0 & RAsian[i] == 0) | 
+                           (RWhite[i] == 0 & RBlack[i] == 0 & RNative_American[i] == 0 & RNative_Hawaiian[i] == 1 & RAsian[i] == 0) |
+                           (RWhite[i] == 0 & RBlack[i] == 0 & RNative_American[i] == 0 & RNative_Hawaiian[i] == 0 & RAsian[i] == 1), 1, 0)
+  if (RWhite[i] == 1 & combined_var == 1) {
+    results[i] <- 2 }
+  if (RBlack[i] == 1 & combined_var == 1) {
+    results[i] <- 3 }
+  if (RNative_American[i] == 1 & combined_var == 1) {
+    results[i] <- 4 }
+  if (RNative_Hawaiian[i] == 1 & combined_var == 1) {
+    results[i] <- 5 }
+  if (RAsian[i] == 1 & combined_var == 1) {
+    results[i] <- 6  }
+ #the commented out code below is to assign 8 to participants who truly didn't mark anything, and assign 7 to participants who put "Yes" for hispanic/latinx
+  #it will run fine once null values are taken out of the Hispanic/Latinx columns in the dataset. I fixed it on a personal version of the doc and had no issues. 
+   if(RWhite[i] == 0 & RBlack[i] == 0 & RNative_American[i] == 0 & RNative_Hawaiian[i] == 0 & RAsian[i] == 0){
+    if(is.na(RLatin[i]) == TRUE | RLatin[i] == 0){
+     results[i] <- 8}
+    
+    if(is.na(RLatin[i]) == FALSE & RLatin[i] ==1){
+      results[i] <- 7 }
+   }
+}
+#cuts "other race" down to 21 categories 
+for(i in 1:nrow(HHS)) {
+  Otherrace <- (HHS$`Other race`[i]) 
+  if(Otherrace %in% c("La tina", "Latino/ hispano", "latino","latina", "hispanic latino", "hispanic/latina", 
+                 "latin", "hispano", "hispanos", "hispanic", "Hispana", "Ispano", "Spanish", "Ispana", 
+                 "Latino", "Hispanic", "Hispanic Latino", "Hispanic/Latina", "Hispanos", "Latina", "Hispano", "Latin")) {
+    HHS$`Other race`[i] <- "Hispanic/Latinx"
+  }
+  if(Otherrace %in% c("República dominicana", "Republics dominicana", "Dominican Republic", "Dominicana", "Dominicano", "Diminicano", "Santo domingo", 
+  "Dominican", "Santo Domingo")){
+    HHS$`Other race`[i] <- "Dominican"
+  }
+  if(Otherrace %in% c("Cape Verdean", "Cape verde", "Cabo Verde", "Cape verdean")){
+    HHS$`Other race`[i] <- "Cape Verdean"
+  }
+  if(Otherrace %in% c("Guatemalteca", "Guatemala", "Guatemalan")){
+    HHS$`Other race`[i] <- "Guatemalan"
+  }
+  if(Otherrace %in% c("Mexico", "Mexican")){
+    HHS$`Other race`[i] <- "Mexican"
+  }
+  if(Otherrace %in% c("Puerto Rico", "Puerto rico", "Puerto Rican")){
+    HHS$`Other race`[i] <- "Puerto Rican"
+  }
+  if(Otherrace %in% c("Idk", "Human", "Humano", "Usa", "pansexual")){
+    HHS$`Other race`[i] <- "Invalid/misscategorized response"
+  }
+  if(Otherrace %in% c("Multiracial", "Mix", "Mixed", "Native South American and Caribbean", "I'm PR & CV", 
+                      "Italian and Puerto Rican", "Indian Asian", "Mulato")){
+    HHS$`Other race`[i] <- "Multiracial"
+  }
+  if(Otherrace %in% c("Centro americana", "Maya")){
+    HHS$`Other race`[i] <- "Central American"
+  }
+}
+unique(HHS$`Other race`)
+#prints the categories of "other race"
+print(length(unique(HHS$`Other race`)))
+head(results, 30)
+frequency_table <- table(results)
+frequency_num <- frequency_table[2]
+print(frequency_table)
+# Access and print the value of a variable for a specific row
 #removing all invalid responses - will update with new variable names after Beau does race variable
+<<<<<<< HEAD
+#Missing <- is.na(HHS2$Age) & is.na(HHS2$`Are you Hispanic/Latinx?`) & is.na(HHS2$`What is the highest education level you have completed?`),
+#HHS <- subset(HHS2, subset=!Missing)
+=======
 Missing <- is.na(HHS$Age) & is.na(HHS$`Hispanic/Latinx`) & is.na(HHS$`Education level`)
 HHS <- subset(HHS, subset=!Missing)
 
@@ -166,16 +256,6 @@ HHS$`Country of Birth`[HHS$`Country of Birth`=="Haití"] <- "Haiti"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="Liberia Africa"] <- "Liberia"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="México"] <- "Mexico"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="USVI"] <- "US Virgin Islands"
-HHS$`Country of Birth`[HHS$`Country of Birth`=="Africa"] <- "Other African Country"
-
-#translating how clinics could help column 
-HHS$`How could clinics help`[HHS$`How could clinics help`=="Ya me están ayudando"]<- "They’re already helping me"
-HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayuda en linea para la salud mental"]<- "Online Help for Mental Health"
-HHS$`How could clinics help`[HHS$`How could clinics help`=="Asesores en español"]<- "Advisors in Spanish"
-HHS$`How could clinics help`[HHS$`How could clinics help`=="Estoy conforme gracias"]<- "I'm happy thank you"
-HHS$`How could clinics help`[HHS$`How could clinics help`=="nada"] <- "Nothing"
-HHS$`How could clinics help`[HHS$`How could clinics help`=="estoy bien"] <- "I'm fine"
-HHS$`How could clinics help`[HHS$`How could clinics help`=="estoy bien"] <- "I'm fine"
 
 
 ################## CODE FOR VISUALS ############################
@@ -237,11 +317,8 @@ freq(HHS$Sexuality)
 #education level
 freq(HHS$`Education level`)
 
-############ DESCRIPTIVE STATS TABLE ###################
-require(table1)
-table1::table1(~`Education level` + Age + `Household Income` + `Household Size` + Gender + Sexuality, data=HHS)
-table1::table1(~`Country of Birth`, data=HHS)
 
 
 
+>>>>>>> 49d7b3188d9ffb07dd488c5025e743391388f86d
 
