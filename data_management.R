@@ -168,6 +168,59 @@ HHS$`Country of Birth`[HHS$`Country of Birth`=="México"] <- "Mexico"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="USVI"] <- "US Virgin Islands"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="Africa"] <- "Other African Country"
 
+#translating how clinics could help column 
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ya me están ayudando"]<- "They’re already helping me"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayuda en linea para la salud mental"]<- "Online Help for Mental Health"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Asesores en español"]<- "Advisors in Spanish"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Estoy conforme gracias"]<- "I'm happy thank you"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="nada" | HHS$`How could clinics help`=="Ninguna"] <- "Nothing"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="estoy bien"] <- "I'm fine"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="seguir apollando"] <- "Keep supporting"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="ayudarme a controlar y regular mi higado"] <- "Help me control and regulate my liver"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="ponerme vacunas"] <- "Get vaccines"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="cheqearme para prevenir algunas enfermedades en la mañana"] <- "check me to prevent some illnesses in the morning"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayudarme gratis solo atenderme"] <- "help me for free just attend to me"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Segir ayudandonos"] <- "Continue to help us"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="seguir dardo servisios gratis"] <- "Continue to provide free services"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="atencion cuando lo necesito"|HHS$`How could clinics help`=="atencion cuando lo necesite"] <- "Attention when I need it"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayudarme gratis"] <- "Help me for free"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="mas maneras de obtener cuidado de salud"] <- "More ways to get healthcare"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Informacion sobre grupos educativos"] <- "Information about educational groups"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Mas educaion o grupos de nutricion"] <- "More education or nutrition groups"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Mas información de medicina"] <- "More medicine information"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Anecho mucho"] <- "Other"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="en casa de alguna emergencia tener alguna asistencia"] <- "at home in an emergency have some assistance"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="no se"] <- "I do not know"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Mejorar mi presión"] <- "Improve my blood pressure"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Psicología"] <- "Psychology"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Dar citas más seguidas"] <- "Give appointments more often"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Seguir mis citas"] <- "Track my appointments"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Darme citas"] <- "Give me appointments"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Estoy agradecida por la ayuda que me prestan sin seguro"] <- "I’m grateful for the help they give me without insurance"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Siempre me ayudan  Estonian agradecida"] <- "They always help me and I am grateful"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Atención médica"] <- "Medical attention"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Con medicinas"] <- "With medicines"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayudarme más con medicamentos fuertes para el dolor"] <- "Help me more with strong pain medicine"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Dar seguimiento más continuo"] <- "Provide more continuous followup"
+
+
+
+
+
+
+
+
+
+
+
+
+
+freq(HHS$`How could clinics help`)
+
+
+
+
+
 ################## CODE FOR VISUALS ############################
 require(ggplot2)
 
