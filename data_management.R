@@ -137,7 +137,36 @@ HHS$Sexuality[HHS$Sexuality == "Me gusta la mujere" | HHS$Sexuality == "Straight
 HHS$Sexuality[HHS$Sexuality == "Bisexual" | HHS$Sexuality == "Pansexual"] <- "Bisexual/Pansexual"
 HHS$Sexuality[HHS$Sexuality == "Demisexual" | HHS$Sexuality == "Asexual"] <- "Queer"
 
-freq(HHS$Sexuality)
+freq(HHS$`Household Size`)
+freq(HHS$`Country of Birth`)
+
+#collapsing country of birth categories
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("11/25/1986 Republica Dominica", "Dom rep", "Dom Rep",
+                                                      "Dom. Rep.", "Dominacn Republic", "Dominican", "Dominican Rep",
+                                                      "dominican republic", "Domincan Republic","Dominican republic",
+                                                      "Dominican República", "Dominican Rwpublic", "dominicana", "Dominicana",
+                                                      "Dominicano", "dR", "Dr", "DR", "En dominicana", "En Republica dominicana",
+                                                      "R.D.", "Rd", "RD", "RD.. 6-24-1981", "Rep dom", "Rep Dom", 
+                                                      "Rep. Dom", "República D", "Republica Domicana","Republica dominicana",
+                                                      "Republica Dominicana", "REPUBLICA Dominicana", "República dominicana",
+                                                      "República Dominicana", "Bonao", "Thé Dominican Republic",
+                                                      "Puerto plata", "Sto dgo", "Santo domingo", "Santo Domingo",
+                                                     "Santos domingo", "Santos Domingo")] <- "Dominican Republic"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Brasil"] <- "Brazil"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Cabo verde", "Cabo Verde", "Cape Verde", "Cape verde")] <- "Republic of Cabo Verde"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Cali", "colombia", "Columbia", "Medellin")] <- "Colombia"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Caguas PR", "PR", "Puerto rico", "Puertorico")] <- "Puerto Rico"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Costa de marfil"] <- "Ivory Coast"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="cuba"]<- "Cuba"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Ecuador- guayaquil"] <- "Ecuador"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="El salvador"|HHS$`Country of Birth`=="San Salvador"] <- "El Salvador"
+HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Guatemalteca", "Guatemalteco", "Guatemela")] <- "Guatemala"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Guinee"] <- "Guinea"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Haití"] <- "Haiti"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="Liberia Africa"] <- "Liberia"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="México"] <- "Mexico"
+HHS$`Country of Birth`[HHS$`Country of Birth`=="USVI"] <- "US Virgin Islands"
+
 
 ################## CODE FOR VISUALS ############################
 require(ggplot2)
