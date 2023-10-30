@@ -154,6 +154,8 @@ HHS$Race[HHS$Race==6] <- "Other"
 #updating spanish names in race variable to english names 
 HHS$Race[HHS$Race=="Caribeña"] <- "Caribbean"
 HHS$Race[HHS$Race=="Indio mexicano"] <- "Mexican Indian"
+HHS$Race[HHS$Race=="Mixed"] <- "Multiracial"
+freq(HHS$Race)
 
 #removing all invalid responses 
 Missing <- is.na(HHS$Age) & is.na(HHS$`Hispanic/Latinx`) & is.na(HHS$`Education level`)
@@ -246,10 +248,18 @@ HHS$`How could clinics help`[HHS$`How could clinics help`=="Atención médica"] 
 HHS$`How could clinics help`[HHS$`How could clinics help`=="Con medicinas"] <- "With medicines"
 HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayudarme más con medicamentos fuertes para el dolor"] <- "Help me more with strong pain medicine"
 HHS$`How could clinics help`[HHS$`How could clinics help`=="Dar seguimiento más continuo"] <- "Provide more continuous followup"
-
-
-
-
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Más apoyo con los médicos"] <- "More support with doctors"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Esta clínica me salvo la vida. Por favor, ayúdenla!"] <- "This clinic saved my life. Please help it!"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Que las citas sean más constantes y no tan alejadas"] <- "Make appointments more constant and not so far apart"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Seguimiento"] <- "Tracking"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Derivarme con el profesional que corresponda"] <- "Refer me to the appropriate professional"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Seguimiento de vista"] <- "View tracking"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Necesito un chequeo general"] <- "I need a general checkup"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Atención ,medicina"] <- "Care, medicine"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Citas"] <- "Appointments"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Seguir con loscontroles"] <- "Continue with the controls"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Ayudarme a chequiar"] <- "Help me check"
+HHS$`How could clinics help`[HHS$`How could clinics help`=="Medicina"] <- "Medicine"
 
 
 
