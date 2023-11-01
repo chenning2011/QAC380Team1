@@ -23,7 +23,7 @@ myvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age", "What is
             "Were you born in the United States?", "Country of birth",
             "Other race","Are you Hispanic/Latinx?", "What is the highest education level you have completed?",
             "Biggest health concern", "How could clinics help","Which clinic are currently visiting?"
-            )
+)
 HHS <-HHSNeedsAssessment_FINAL_DATA[myvars]
 
 #replacing NA values with Open Door Health for clinic name 
@@ -50,8 +50,8 @@ subvars <- c("Record ID", "Survey Timestamp...3","Complete?...4" ,"Age",
              "Gender Identity", "Sexual Orientation", "Country of Birth")
 HHS <- HHS[subvars]
 names(HHS) <- c("Record ID", "Survey timestamp", "Complete?", "Age", "White", "Black", "Native American",
-           "Native Hawaiian", "Asian", "Other race", "Household Income", "Household Size","Hispanic/Latinx", "Education level",
-           "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality", "Country of Birth")
+                "Native Hawaiian", "Asian", "Other race", "Household Income", "Household Size","Hispanic/Latinx", "Education level",
+                "Biggest health concern", "How could clinics help", "Clinic", "Gender", "Sexuality", "Country of Birth")
 #dropping people under the age of 18
 HHS$Age[HHS$Age < 18] <- NA
 
@@ -188,15 +188,15 @@ freq(HHS$`Country of Birth`)
 
 #collapsing country of birth categories
 HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("11/25/1986 Republica Dominica", "Dom rep", "Dom Rep",
-                                                      "Dom. Rep.", "Dominacn Republic", "Dominican", "Dominican Rep",
-                                                      "dominican republic", "Domincan Republic","Dominican republic",
-                                                      "Dominican República", "Dominican Rwpublic", "dominicana", "Dominicana",
-                                                      "Dominicano", "dR", "Dr", "DR", "En dominicana", "En Republica dominicana",
-                                                      "R.D.", "Rd", "RD", "RD.. 6-24-1981", "Rep dom", "Rep Dom", 
-                                                      "Rep. Dom", "República D", "Republica Domicana","Republica dominicana",
-                                                      "Republica Dominicana", "REPUBLICA Dominicana", "República dominicana",
-                                                      "República Dominicana", "Bonao", "Thé Dominican Republic",
-                                                      "Puerto plata", "Sto dgo", "Santo domingo", "Santo Domingo",
+                                                     "Dom. Rep.", "Dominacn Republic", "Dominican", "Dominican Rep",
+                                                     "dominican republic", "Domincan Republic","Dominican republic",
+                                                     "Dominican República", "Dominican Rwpublic", "dominicana", "Dominicana",
+                                                     "Dominicano", "dR", "Dr", "DR", "En dominicana", "En Republica dominicana",
+                                                     "R.D.", "Rd", "RD", "RD.. 6-24-1981", "Rep dom", "Rep Dom", 
+                                                     "Rep. Dom", "República D", "Republica Domicana","Republica dominicana",
+                                                     "Republica Dominicana", "REPUBLICA Dominicana", "República dominicana",
+                                                     "República Dominicana", "Bonao", "Thé Dominican Republic",
+                                                     "Puerto plata", "Sto dgo", "Santo domingo", "Santo Domingo",
                                                      "Santos domingo", "Santos Domingo")] <- "Dominican Republic"
 HHS$`Country of Birth`[HHS$`Country of Birth`=="Brasil"] <- "Brazil"
 HHS$`Country of Birth`[HHS$`Country of Birth` %in% c("Cabo verde", "Cabo Verde", "Cape Verde", "Cape verde")] <- "Republic of Cabo Verde"
@@ -349,10 +349,154 @@ HHS$`How could clinics help`[HHS$`How could clinics help`=="Tener más citas dis
 HHS$`How could clinics help`[HHS$`How could clinics help`=="Tener más citas disponibles"] <- "Have more appointments available"
 
 
+View(HHS)
 
 
 ################## CODE FOR VISUALS ############################
 require(ggplot2)
+
+
+
+# Sample data for demonstration 
+
+HHS <- data.frame(
+  Household_Size = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21),
+  Household_Income = c(
+    "Less than $10,000", "$10,000 to $15,000", "$15,001 to $20,000", "$20,001 to $25,000",
+    "$25,001 to $30,000", "$30,001 to $35,000", "$35,001 to $40,000", "$40,001 to $45,000",
+    "$45,001 to $50,000", "$50,001 to $55,000", "$55,001 to $60,000", "$60,001 to $65,000",
+    "$65,001 to $70,000", "$70,001 to $75,000", "$75,001 to $80,000", "$80,001 to $85,000",
+    "$85,001 to $90,000", "$90,001 to $95,000", "$95,001 to $100,000", "$101,000 or more", "Decline to answer"
+  )
+)
+
+# Load required libraries
+library(dplyr)
+library(ggplot2)
+
+# Assuming you have your HHS data frame ready
+
+# Calculate the average household size for each income category
+average_size <- HHS %>%
+  group_by(Household_Income) %>%
+  summarize(Average_Size = mean(Household_Size, na.rm = TRUE))%>%
+  arrange(Average_Size)
+
+
+# Create a bar plot
+
+barplot <- ggplot(average_size, aes(x = reorder(Household_Income, Average_Size), y = Average_Size)) +
+  geom_bar(stat = "identity", fill = "blue", color = "red") +  # Add black outline
+  labs(x = "Household Income", y = "Average Household Size") +
+  ggtitle("Average Household Size by Income Category") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "bold"))  # Bold x-axis labels
+
+
+print(barplot)
+
+
+
+
+
+
+
+# Load the dplyr package
+library(dplyr)
+
+recoded_country <- function(country) {
+  country <- tolower(country)
+  if (grepl("^do", country) | grepl("rep[úu]blica d", country) | 
+      grepl("^rd", country) | grepl("d[ro]", country) | 
+      grepl("6-24-1981", country) | grepl("r\\.d\\.", country)) {
+    return("Dominican Republic")
+  } else if (grepl("^gua", country)) {
+    return("Guatemala")
+  } else if (grepl("^col", country)) {
+    return("Colombia")
+  } else if (grepl("^liberia", country)) {
+    return("Liberia")
+  } else if (grepl("^haiti", country)) {
+    return("Haiti")
+  } else if (grepl("^pr", country)) {
+    return("Puerto Rico")
+  } else if (grepl("mexico", country)) {
+    return("México")
+  } else {
+    return(country)
+  }
+}
+
+
+# Apply the recoding function to the "Country of Birth" column
+HHS <- HHS %>%
+  mutate(Country_of_Birth_Recoded = sapply(`Country of Birth`, recoded_country))
+
+
+
+print(grouped_bar_plot)
+
+
+
+library(ggplot2)
+
+# Recode the Country of Birth
+HHS$`Country of Birth` <- sapply(HHS$`Country of Birth`, recoded_country)
+
+# Create a data frame for the heatmap
+heatmap_data <- as.data.frame(table(HHS$`Country of Birth`, HHS$`Education level`))
+colnames(heatmap_data) <- c("Country", "Education Level", "Count")
+
+
+
+heatmap_plot <- ggplot(heatmap_data, aes(x = factor(Country, levels = unique(heatmap_data$Country)), y = `Education Level`, fill = Count)) +
+  geom_tile() +
+  labs(title = "Relationship between Country of Birth and Education Level", x = "Country of Birth", y = "Education Level", fill = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
+  scale_fill_gradient(low = "white", high = "darkblue")
+
+# Print the updated heatmap
+print(heatmap_plot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Relationship between Clinic and Gender
 ggplot(data = subset(HHS, !is.na(Gender)), aes(x = Clinic, fill = (Gender))) +
