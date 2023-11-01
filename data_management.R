@@ -561,6 +561,11 @@ most_frequent_term2 <- names(which.max(term_counts2))
 cat("Most frequent term:", most_frequent_term2, "\n")
 findFreqTerms(dtm2, 5)
 
+#doing some stuff for the report here
+filtered_data <- HHS %>% 
+  group_by(`Education level`,`Household Income`) %>% 
+  count(name = "freq")
 
 
+freq(HHS$Race)
 
