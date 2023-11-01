@@ -374,7 +374,7 @@ HHS <- data.frame(
 library(dplyr)
 library(ggplot2)
 
-# Assuming you have your HHS data frame ready
+
 
 # Calculate the average household size for each income category
 average_size <- HHS %>%
