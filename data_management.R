@@ -569,3 +569,73 @@ filtered_data <- HHS %>%
 
 freq(HHS$Race)
 
+#dean's visualizations 
+
+# Calculate the average household size for each income category
+average_size <- HHS %>%
+  group_by(`Household Income`) %>%
+  summarize(Average_Size = mean(`Household Size`, na.rm = TRUE))%>%
+  arrange(Average_Size)
+
+
+# Create a bar plot
+
+ggplot(data=subset(average_size, !is.na(`Household Income`)), aes(x = reorder(`Household Income`, Average_Size), y = Average_Size)) +
+  geom_bar(stat = "identity", fill = "blue", color = "black") +  # Add black outline
+  labs(x = "Household Income", y = "Average Household Size") +
+  ggtitle("Average Household Size by Income Category") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "bold"))  # Bold x-axis labels
+
+recoded_country <- function(data) {
+  data$`Country of Birth` <- tolower(data$`Country of Birth`)
+  data$`Country of Birth` <- ifelse(grepl("^do", data$`Country of Birth`) | 
+                                      grepl("rep[úu]blica d", data$`Country of Birth`) | 
+                                      grepl("^rd", data$`Country of Birth`) | 
+                                      grepl("d[ro]", data$`Country of Birth`) | 
+                                      grepl("6-24-1981", data$`Country of Birth`) | 
+                                      grepl("r\\.d\\.", data$`Country of Birth`), "Dominican Republic",
+                                    ifelse(grepl("^gua", data$`Country of Birth`), "Guatemala",
+                                           ifelse(grepl("^col", data$`Country of Birth`), "Colombia",
+                                                  ifelse(grepl("^liberia", data$`Country of Birth`), "Liberia",
+                                                         ifelse(grepl("^haiti", data$`Country of Birth`), "Haiti",
+                                                                ifelse(grepl("^pr", data$`Country of Birth`), "Puerto Rico",
+                                                                       ifelse(grepl("mexico", data$`Country of Birth`), "México",
+                                                                              data$`Country of Birth`)))))))
+  
+  return(data)
+}
+
+# Apply the recoding function to the "Country of Birth" column
+HHS2 <- recoded_country(HHS)
+
+# Create a data frame for the heatmap
+heatmap_data <- as.data.frame(table(HHS2$`Country of Birth`, HHS2$`Education level`))
+colnames(heatmap_data) <- c("Country", "Education Level", "Count")
+
+ggplot(heatmap_data, aes(x = factor(Country, levels = unique(Country)), y = `Education Level`, fill = Count)) +
+  geom_tile() +
+  labs(title = "Relationship between Country of Birth and Education Level", x = "Country of Birth", y = "Education Level", fill = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
+  scale_fill_gradient(low = "white", high = "darkblue")
+
+library(scales)
+
+# Calculate the percentage by country and education level
+heatmap_data <- HHS %>%
+  group_by(`Country of Birth`, `Education level`) %>%
+  count() %>%
+  group_by(`Country of Birth`) %>%
+  mutate(percentage = n / sum(n) * 100)
+
+my_colors <- c("#FFEDA0", "#FED976", "#FEB24C", "#FD8D3C", "#FC4E2A", "#E31A1C", "#BD0026")
+
+# Create the heatmap plot
+ggplot(data=subset(heatmap_data, !is.na(`Education level`) & !is.na(`Country of Birth`)), aes(x = factor(`Country of Birth`, levels = unique(`Country of Birth`)), y = `Education level`, fill = percentage)) +
+  geom_tile() +
+  labs(title = "Percentage of Educational Attainment by Country of Birth", x = "Country of Birth", y = "Education Level", fill = "Percentage") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
+  scale_fill_continuous(labels = scales::percent_format(scale = 1))+
+  scale_fill_gradientn(colors = my_colors)
+
