@@ -537,30 +537,6 @@ require(table1)
 table1::table1(~`Education level` + Age + `Household Income` + `Household Size` + Gender + Sexuality, data=HHS)
 table1::table1(~`Country of Birth`, data=HHS)
 
-##### testing this package i found ########
-library(tm)
-corpus <- Corpus(VectorSource(HHS$`How could clinics help`))
-corpus <- tm_map(corpus, content_transformer(tolower))
-corpus <- tm_map(corpus, removePunctuation)
-corpus <- tm_map(corpus, removeNumbers)
-corpus <- tm_map(corpus, removeWords, stopwords("en"))
-dtm <- DocumentTermMatrix(corpus)
-term_counts <- colSums(as.matrix(dtm))
-most_frequent_term <- names(which.max(term_counts))
-cat("Most frequent term:", most_frequent_term, "\n")
-findFreqTerms(dtm, 5)
-
-corpus2 <- Corpus(VectorSource(HHS$`Biggest health concern`))
-corpus2 <- tm_map(corpus2, content_transformer(tolower))
-corpus2 <- tm_map(corpus2, removePunctuation)
-corpus2 <- tm_map(corpus2, removeNumbers)
-corpus2 <- tm_map(corpus2, removeWords, stopwords("en"))
-dtm2 <- DocumentTermMatrix(corpus2)
-term_counts2 <- colSums(as.matrix(dtm2))
-most_frequent_term2 <- names(which.max(term_counts2))
-cat("Most frequent term:", most_frequent_term2, "\n")
-findFreqTerms(dtm2, 5)
-
 #doing some stuff for the report here
 filtered_data <- HHS %>% 
   group_by(`Education level`,`Household Income`) %>% 
@@ -638,4 +614,60 @@ ggplot(data=subset(heatmap_data, !is.na(`Education level`) & !is.na(`Country of 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
   scale_fill_continuous(labels = scales::percent_format(scale = 1))+
   scale_fill_gradientn(colors = my_colors)
+
+######################### TEXT ANALYSIS MAYBE IDK #################
+library(tm)
+#find the terms that appear at least 5 times
+corpus <- Corpus(VectorSource(HHS$`How could clinics help`))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("en"))
+dtm <- DocumentTermMatrix(corpus)
+term_counts <- colSums(as.matrix(dtm))
+most_frequent_term <- names(which.max(term_counts))
+cat("Most frequent term:", most_frequent_term, "\n")
+selected_terms <- findFreqTerms(dtm, 5)
+
+#finding the terms that appear at least 5 times 
+corpus2 <- Corpus(VectorSource(HHS$`Biggest health concern`))
+corpus2 <- tm_map(corpus2, content_transformer(tolower))
+corpus2 <- tm_map(corpus2, removePunctuation)
+corpus2 <- tm_map(corpus2, removeNumbers)
+corpus2 <- tm_map(corpus2, removeWords, stopwords("en"))
+dtm2 <- DocumentTermMatrix(corpus2)
+term_counts2 <- colSums(as.matrix(dtm2))
+most_frequent_term2 <- names(which.max(term_counts2))
+cat("Most frequent term:", most_frequent_term2, "\n")
+selected_terms_2 <- findFreqTerms(dtm2, 5)
+
+#just giving up and trying regex at this point 
+HHS$`How could clinics help` <- tolower(HHS$`How could clinics help`)
+  
+# Regular expressions
+regex_appointments <- "\\b(appointments|scheduling|making|patient portal)\\b"
+regex_routine_care <- "\\b(routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|contraceptives|birth control|pregnancy prevention|medicines|check ups|physicals)\\b"
+regex_insurance <- "\\b(insurance|coverage|money)\\b"
+regex_communication <- "\\b(communication|resources|interpretation)\\b"
+regex_nutrition <- "\\b(nutrition|dietician|dietitian|diet|dieting|food classes|eat and exercise)\\b"
+regex_mental_health <- "\\b(mental health|psychologist|psychology|depression|anxiety|therapy|counseling|counselling)\\b"
+regex_education <- "\\b(education|awareness|prevention|vaccine|information|resources|advisement|learn|learning)\\b"
+regex_clinic_meeting_needs <- "\\b(nothing|do so much|excellent|great|help me already|already helping me|confident|everything that i need|love|priceless|needs being met|needs are being met|god sent|helped a lot|helping much more|helpful|listening)\\b"
+
+library(tidyverse)
+df <- HHS %>%
+  mutate(
+    Help_Category = case_when(
+      grepl(regex_appointments, HHS$`How could clinics help`) ~ "appointment",
+      grepl(regex_routine_care, HHS$`How could clinics help`) ~ "routine/primary care",
+      grepl(regex_insurance, HHS$`How could clinics help`) ~ "insurance",
+      grepl(regex_communication, HHS$`How could clinics help`) ~ "communication",
+      grepl(regex_nutrition, HHS$`How could clinics help`) ~ "nutrition",
+      grepl(regex_mental_health, HHS$`How could clinics help`) ~ "mental health",
+      grepl(regex_education, HHS$`How could clinics help`) ~ "education",
+      grepl(regex_clinic_meeting_needs, HHS$`How could clinics help`) ~ "clinic meeting needs",
+      TRUE ~ "other"
+    )
+  ) %>% 
+  select(Help_Category, `How could clinics help`)
 
