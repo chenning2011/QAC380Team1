@@ -645,7 +645,6 @@ selected_terms_2 <- findFreqTerms(dtm2, 5)
 HHS$`How could clinics help` <- tolower(HHS$`How could clinics help`)
   
 # Regular expressions
-<<<<<<< HEAD
 regex_appointments <- "\\b(appointments|scheduling|making|patient portal|telehealth|consistent care|appts|followups|referrals|attention|refer|appointment|on time|more ways|followup|continue with controls|service|assistance|follow-ups|regularly)\\b"
 regex_routine_care <- "\\b(routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|medicines|check ups|physicals|checkup|checking|vaccines|vaccine|help me with health|medication|medical attention|prevent|meds|medicine|doctors|help me check|exams|treatment|physical|follow-up|examine)\\b"
 regex_insurance <- "\\b(insurance|coverage|money|check cashing|paying|for free|free services|free|payments|reduce cost|discount)\\b"
@@ -655,16 +654,6 @@ regex_nutrition <- "\\b(nutrition|dietician|dietitian|diet|dieting|food classes|
 regex_mental_health <- "\\b(mental health|psychologist|psychology|depression|anxiety|therapy|counseling|counselling|bipolar|psychological|therapist|rehab|psychiatrist)\\b"
 regex_education <- "\\b(education|awareness|prevention|vaccine|information|resources|advisement|learn|learning)\\b"
 regex_clinic_meeting_needs <- "\\b(nothing|do so much|excellent|great|help me already|already helping me|confident|everything that i need|love|priceless|needs being met|needs are being met|god sent|helped a lot|helping much more|helpful|listening|anything they can|not sure|continue to exist|helping me|happy|doing really well|meets all my health care needs|good|prescribed|does really well|doing enough|i come here|i'm fine|gives me a lot of concern|keep supporting|continue to help us|thank you|always help me|grateful|ok|saved my life|pleased|helps so much|i like|already|received advice|already helps|amazing|already|do a lot|helped|keep seeing|keep giving|all they can|satisfied|continue to treat|tx|they help me|awesome|a lot|they help me|perfect|they do it all|it meet|treated very well|everything|continue|they do everything)\\b"
-=======
-regex_appointments <- "\\b(appointments|scheduling|making|patient portal)\\b"
-regex_routine_care <- "\\b(routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|contraceptives|birth control|pregnancy prevention|medicines|check ups|physicals|checkup|keep checking me|vaccines)\\b"
-regex_insurance <- "\\b(insurance|coverage|money)\\b"
-regex_communication <- "\\b(communication|resources|interpretation|telephone system|advisors|interpreters)\\b"
-regex_nutrition <- "\\b(nutrition|dietician|dietitian|diet|dieting|food classes|eat and exercise|education of meals|nutritionists)\\b"
-regex_mental_health <- "\\b(mental health|psychologist|psychology|depression|anxiety|therapy|counseling|counselling|bipolar|psychological consultation)\\b"
-regex_education <- "\\b(education|awareness|prevention|vaccine|information|resources|advisement|learn|learning|up to date|advice|fully understand)\\b"
-regex_clinic_meeting_needs <- "\\b(nothing|do so much|excellent|great|help me already|already helping me|confident|everything that i need|love|priceless|needs being met|needs are being met|god sent|helped a lot|helping much more|helpful|listening)\\b"
->>>>>>> 43b7847d79f711d788895d1648d0f13107c92aae
 
 library(tidyverse)
 HHS <- HHS %>%
