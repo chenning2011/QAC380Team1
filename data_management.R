@@ -645,20 +645,21 @@ selected_terms_2 <- findFreqTerms(dtm2, 5)
 HHS$`How could clinics help` <- tolower(HHS$`How could clinics help`)
   
 # Regular expressions
-regex_appointments <- "\\b(appointments|scheduling|making|patient portal)\\b"
-regex_routine_care <- "\\b(routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|contraceptives|birth control|pregnancy prevention|medicines|check ups|physicals)\\b"
-regex_insurance <- "\\b(insurance|coverage|money)\\b"
-regex_communication <- "\\b(communication|resources|interpretation)\\b"
-regex_nutrition <- "\\b(nutrition|dietician|dietitian|diet|dieting|food classes|eat and exercise)\\b"
-regex_mental_health <- "\\b(mental health|psychologist|psychology|depression|anxiety|therapy|counseling|counselling)\\b"
+regex_appointments <- "\\b(appointments|scheduling|making|patient portal|telehealth|consistent care|appts|followups|referrals|attention|refer|appointment|on time|more ways|followup|continue with controls|service|assistance|follow-ups|regularly)\\b"
+regex_routine_care <- "\\b(routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|medicines|check ups|physicals|checkup|checking|vaccines|vaccine|help me with health|medication|medical attention|prevent|meds|medicine|doctors|help me check|exams|treatment|physical|follow-up|examine)\\b"
+regex_insurance <- "\\b(insurance|coverage|money|check cashing|paying|for free|free services|free|payments|reduce cost|discount)\\b"
+regex_specialist <- "\\b(gender affirming|endocrinology|sti|testosterone|plan of addressing|optho|skin|liver|specialty|blood pressure|take away the pain|stomach|osteoporosis|surgery|ophthalmologist|diabetes|pchc|bladder|wheelchair|pregnancy|birth control|contraceptives|deliver|accessible|fertility|pain)\\b"
+regex_communication <- "\\b(communication|resources|interpretation|telephone|advisor|attentive|advisors|talk|portal|informacion|up to date|informed|listen|advice)\\b"
+regex_nutrition <- "\\b(nutrition|dietician|dietitian|diet|dieting|food classes|eat and exercise|meals|nutritionists|food)\\b"
+regex_mental_health <- "\\b(mental health|psychologist|psychology|depression|anxiety|therapy|counseling|counselling|bipolar|psychological|therapist|rehab|psychiatrist)\\b"
 regex_education <- "\\b(education|awareness|prevention|vaccine|information|resources|advisement|learn|learning)\\b"
-regex_clinic_meeting_needs <- "\\b(nothing|do so much|excellent|great|help me already|already helping me|confident|everything that i need|love|priceless|needs being met|needs are being met|god sent|helped a lot|helping much more|helpful|listening)\\b"
+regex_clinic_meeting_needs <- "\\b(nothing|do so much|excellent|great|help me already|already helping me|confident|everything that i need|love|priceless|needs being met|needs are being met|god sent|helped a lot|helping much more|helpful|listening|anything they can|not sure|continue to exist|helping me|happy|doing really well|meets all my health care needs|good|prescribed|does really well|doing enough|i come here|i'm fine|gives me a lot of concern|keep supporting|continue to help us|thank you|always help me|grateful|ok|saved my life|pleased|helps so much|i like|already|received advice|already helps|amazing|already|do a lot|helped|keep seeing|keep giving|all they can|satisfied|continue to treat|tx|they help me|awesome|a lot|they help me|perfect|they do it all|it meet|treated very well|everything|continue|they do everything)\\b"
 
 library(tidyverse)
-df <- HHS %>%
+HHS <- HHS %>%
   mutate(
     Help_Category = case_when(
-      grepl(regex_appointments, HHS$`How could clinics help`) ~ "appointment",
+      grepl(regex_appointments, HHS$`How could clinics help`) ~ "appointment/access",
       grepl(regex_routine_care, HHS$`How could clinics help`) ~ "routine/primary care",
       grepl(regex_insurance, HHS$`How could clinics help`) ~ "insurance",
       grepl(regex_communication, HHS$`How could clinics help`) ~ "communication",
@@ -666,8 +667,72 @@ df <- HHS %>%
       grepl(regex_mental_health, HHS$`How could clinics help`) ~ "mental health",
       grepl(regex_education, HHS$`How could clinics help`) ~ "education",
       grepl(regex_clinic_meeting_needs, HHS$`How could clinics help`) ~ "clinic meeting needs",
+      grepl(regex_specialist, HHS$`How could clinics help`) ~ "specialist",
       TRUE ~ "other"
     )
-  ) %>% 
-  select(Help_Category, `How could clinics help`)
+  ) 
+HHS$Help_Category[is.na(HHS$`How could clinics help`)] <- NA
+
+library(descr)
+freq(HHS$Help_Category)
+
+#graph of clusters 
+library(tidyverse)
+ggplot(data=subset(HHS, !is.na(Help_Category)))+
+  geom_bar(aes(x=Help_Category, fill=Clinic), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need Across All Six Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_y_continuous(labels = scales::percent)
+
+#just giving up and trying regex at this point 
+HHS$`Biggest health concern` <- tolower(HHS$`Biggest health concern`)
+
+# Regular expression
+regex_mental_health2 <- "\\b(depresión|angry|metal|emotional|mental|depressed|sad|anixety|stress|bipolar|adhd|bpd|mental healt|mental health|psychologist|psychology|depression|anxiety|therapy|counseling|counselling|bipolar|psychological|therapist|rehab|psychiatrist)\\b"
+regex_chronic <- "\\b(worsening condition|lack of function|addiction|arthritis|chronic|chronic liver disease|disability|chronic illness|chronic pain|smoking|chronic sinus|vaping|pain i live with|immuno disorder)\\b"
+regex_sexual_health <- "\\b(haven't been able to have children|gynecology|planning method|birth|pregnancy|fertility|gynecologist|pregnant|gynecological|std|sexual|sexual health|sti|hiv|reproductivo)\\b"
+regex_health_conditions <- "\\b(kidneys|allergies|breast|dementia|tumor|nerves|ibd|neurologist|aches|bleeding|coughing|breathing|monkey pox|vision|celiac|skin|tooth|vitamin|b12|keloid|bladder|prostate|rare disease|shoulder|feet|veins|body aches|throat|very little physical energy|hand|ovaries|back|polio|abscess|artritis|eye|chest|arm|osteoporosis|prediabetic|cardiologist|cholesetrol|circulation|sciatic|broken bones|diabetic|leg pain|pain in the arm|head|liver|sciatica|illness|operating|reflux|infection|dental|blood sugar|eyesight|spinal|fatigue|tired|lung|epilepsy|breasts|eyes|stomach|anemia|teeth|hypertension|thyroid|gout|headaches|knee|fibromyalgia|heart|blood pressure|lungs|legs|foot|pacemaker|asthma|eczema|glaucoma|heart attack|spine|injuries|siatic pains|high blood pressure|kidney|diabetes'|surgery|dental issues|knees|scoliosis|cancer|cholesterol|diabetes|prediabetes|bowel issues|knee injury|period pain|rectal pain)\\b"
+regex_nutrition_weight <- "\\b(eating well|heavier|underweight|weight gain|obesity|food storage|overweight|not eating enough|weight|diet|nutrition|dietician|dietitian|diet|dieting|food classes|eat and exercise|meals|nutritionists|food)\\b"
+regex_insurance2 <- "\\b(cost|funds|no medicine|money|insurance|coverage|money|check cashing|paying|for free|free services|free|payments|reduce cost|discount)\\b"
+regex_access <- "\\b(attention|hormones|endocrinologist|hrt|lgbtq+|bipoc|falling through the cracks|trans|transgender|gender affirming)\\b"
+regex_covid <-"\\b(covid|covid-19|pandemic)\\b"
+regex_worry <-"\\b(new issues|not getting worse|to be well|health in general|worse|safety|90|proper care|everything|having something|healthy|dying young|old|sick|stay physically well|live long|not being well enough|health is bad|physical health|accident)\\b"
+
+
+library(tidyverse)
+HHS <- HHS %>%
+  mutate(
+    Concern_Category = case_when(
+      grepl(regex_access, HHS$`Biggest health concern`) ~ "access to specialized care",
+      grepl(regex_mental_health2, HHS$`Biggest health concern`) ~ "mental health",
+      grepl(regex_insurance2, HHS$`Biggest health concern`) ~ "insurance",
+      grepl(regex_covid, HHS$`Biggest health concern`) ~ "covid",
+      grepl(regex_nutrition_weight, HHS$`Biggest health concern`) ~ "nutrition/weight",
+      grepl(regex_chronic, HHS$`Biggest health concern`) ~ "chronic conditions",
+      grepl(regex_sexual_health, HHS$`Biggest health concern`) ~ "sexual health",
+      grepl(regex_health_conditions, HHS$`Biggest health concern`) ~ "specific health concerns",
+      grepl(regex_worry, HHS$`Biggest health concern`) ~ "general worry/fear",
+      TRUE ~ "other"
+    )
+  ) 
+HHS$Concern_Category[is.na(HHS$`Biggest health concern`)] <- NA
+
+library(descr)
+library(scales)
+freq(HHS$Concern_Category)
+
+#graph of clusters 
+library(tidyverse)
+ggplot(data=subset(HHS, !is.na(Concern_Category)))+
+  geom_bar(aes(x=Concern_Category, fill=Clinic), position="fill")+
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern Across All Six Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_y_continuous(labels = scales::percent)
+  
+
+
 
