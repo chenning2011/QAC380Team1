@@ -645,8 +645,8 @@ selected_terms_2 <- findFreqTerms(dtm2, 5)
 HHS$`How could clinics help` <- tolower(HHS$`How could clinics help`)
   
 # Regular expressions
-regex_appointments <- "\\b(appointments|scheduling|making|patient portal|telehealth|consistent care|appts|followups|referrals|attention|refer|appointment|on time|more ways|followup|continue with controls|service|assistance|follow-ups|regularly)\\b"
-regex_routine_care <- "\\b(routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|medicines|check ups|physicals|checkup|checking|vaccines|vaccine|help me with health|medication|medical attention|prevent|meds|medicine|doctors|help me check|exams|treatment|physical|follow-up|examine)\\b"
+regex_appointments <- "\\b(tracking|appointments|scheduling|making|patient portal|telehealth|consistent care|appts|followups|referrals|attention|refer|appointment|on time|more ways|followup|continue with controls|service|assistance|follow-ups|regularly)\\b"
+regex_routine_care <- "\\b(need more help with other things|take care of me|help me to be well|to help me|routine care|medical care|preventative|test|testing|primary care|pcp|monitor|primary careservices|cancer screening|medications|medicines|check ups|physicals|checkup|checking|vaccines|vaccine|help me with health|medication|medical attention|prevent|meds|medicine|doctors|help me check|exams|treatment|physical|follow-up|examine)\\b"
 regex_insurance <- "\\b(insurance|coverage|money|check cashing|paying|for free|free services|free|payments|reduce cost|discount)\\b"
 regex_specialist <- "\\b(gender affirming|endocrinology|sti|testosterone|plan of addressing|optho|skin|liver|specialty|blood pressure|take away the pain|stomach|osteoporosis|surgery|ophthalmologist|diabetes|pchc|bladder|wheelchair|pregnancy|birth control|contraceptives|deliver|accessible|fertility|pain)\\b"
 regex_communication <- "\\b(communication|resources|interpretation|telephone|advisor|attentive|advisors|talk|portal|informacion|up to date|informed|listen|advice)\\b"
@@ -705,7 +705,7 @@ library(tidyverse)
 HHS <- HHS %>%
   mutate(
     Concern_Category = case_when(
-      grepl(regex_access, HHS$`Biggest health concern`) ~ "access to specialized care",
+      grepl(regex_access, HHS$`Biggest health concern`) ~ "transgender health care",
       grepl(regex_mental_health2, HHS$`Biggest health concern`) ~ "mental health",
       grepl(regex_insurance2, HHS$`Biggest health concern`) ~ "insurance",
       grepl(regex_covid, HHS$`Biggest health concern`) ~ "covid",
