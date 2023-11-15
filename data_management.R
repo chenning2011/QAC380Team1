@@ -732,7 +732,53 @@ ggplot(data=subset(HHS, !is.na(Concern_Category)))+
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
   scale_fill_brewer(palette="Dark2")+
   scale_y_continuous(labels = scales::percent)
-  
+
+#clusters by clinic 
+ggplot(data=subset(HHS, !is.na(Help_Category) & Clinic=="Open Door Health" & !is.na(Gender)))+
+  geom_bar(aes(x=Help_Category, fill=Gender), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need for Open Door Health") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_y_continuous(labels = scales::percent)
+
+freq(HHS$Race)
+HHS$Race[HHS$Race=="Mestiza"|HHS$Race=="Mexican"|HHS$Race=="Mexican Indian"|HHS$Race=="Dominican"|HHS$Race=="Caribbean"|HHS$Race=="Colombia"|HHS$Race=="Guatemalan"|HHS$Race=="Haitian"|HHS$Race=="Puerto Rican"|HHS$Race=="Bolivia"|HHS$Race=="Central American"]<- "Hispanic/Latinx"
+HHS$Race[HHS$Race=="Cape Verdean"|HHS$Race=="Lebanon"|HHS$Race=="Somalian"|HHS$Race=="African"] <- "Black/African American"
+HHS$Race[HHS$Race=="Middle Eastern"] <- "White"
+HHS$Race[HHS$Race=="China"] <- "Asian"
+
+summary(HHS$Age)
+HHS$`Household Size`[HHS$`Household Size`==0] <- NA
+summary(HHS$`Household Size`)
+
+#Creating poverty variable 
+HHS$Poverty <- "No Poverty"
+HHS$Poverty[HHS$`Household Income`=="Less than $10,000"|HHS$`Household Income`=="$10,000 to $15,000"|HHS$`Household Income`=="$15,001 to $20,000" & HHS$`Household Size`>= 2] <- "Poverty"
+HHS$Poverty[HHS$`Household Income`=="Less than $10,000"|HHS$`Household Income`=="$10,000 to $15,000"& HHS$`Household Size`==1]<- "Poverty"
+
+freq(HHS$Poverty)
+
+#clusters by poverty level
+ggplot(data=subset(HHS, !is.na(Help_Category) & Clinic=="Open Door Health" & !is.na(Poverty)))+
+  geom_bar(aes(x=Help_Category, fill=Poverty), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need for Open Door Health") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  scale_fill_brewer(palette="Set2")+
+  scale_y_continuous(labels = scales::percent)
+
+#poverty and education level 
+ggplot(data=subset(HHS, !is.na(`Education level`) & Clinic=="Open Door Health" & !is.na(Poverty)))+
+  geom_bar(aes(x=`Education level`, fill=Poverty), position="fill")+
+  labs(x = "Education Level", 
+       y = "Percentage Impoverished for Each Level", 
+       title="Relationship Between Education Level and Poverty Status") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  scale_fill_brewer(palette="Reds")+
+  scale_y_continuous(labels = scales::percent)
+
 
 
 
