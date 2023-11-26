@@ -725,20 +725,44 @@ freq(HHS$Concern_Category)
 
 #graph of clusters 
 library(tidyverse)
+
+HHS <- HHS %>% 
+  mutate(Clinic = recode(Clinic, 
+                         "Providence Community Health Center: Atwood" = "Providence Community\nHealth Center: Atwood",
+                         "Providence Community Health Center: Chafee" = "Providence Community\nHealth Center: Chafee",
+                         "Providence Community Health Center: Randall Square" = "Providence Community\nHealth Center: Randall Square"))
+
 ggplot(data=subset(HHS, !is.na(Concern_Category)))+
   geom_bar(aes(x=Concern_Category, fill=Clinic), position="fill")+
-  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern Across All Six Clinics") +
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nAcross All Six Clinics") +
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
   scale_fill_brewer(palette="Dark2")+
   scale_y_continuous(labels = scales::percent)
 
+freq(HHS$Concern_Category)
+
+#clusters for how clinics can help 
+ggplot(data=subset(HHS, !is.na(Help_Category)))+
+  geom_bar(aes(x=Help_Category, fill=Clinic), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need\nAcross All Six Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_y_continuous(labels = scales::percent)
+
+freq(HHS$Help_Category)
+
 #clusters by clinic 
+HHS <- HHS %>% 
+  mutate(Gender = recode(Gender,
+                         "Genderqueer, neither exclusively man nor woman" = "Genderqueer"))
+
 ggplot(data=subset(HHS, !is.na(Help_Category) & Clinic=="Open Door Health" & !is.na(Gender)))+
   geom_bar(aes(x=Help_Category, fill=Gender), position="fill")+
-  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need for Open Door Health") +
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need \nat Open Door Health") +
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
   scale_fill_brewer(palette="Dark2")+
   scale_y_continuous(labels = scales::percent)
 
@@ -762,23 +786,144 @@ freq(HHS$Poverty)
 #clusters by poverty level
 ggplot(data=subset(HHS, !is.na(Help_Category) & Clinic=="Open Door Health" & !is.na(Poverty)))+
   geom_bar(aes(x=Help_Category, fill=Poverty), position="fill")+
-  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need for Open Door Health") +
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need\nat Open Door Health") +
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size = 10))+
   scale_fill_brewer(palette="Set2")+
   scale_y_continuous(labels = scales::percent)
 
 #poverty and education level 
+#making education level an ordered factor 
+HHS$`Education level` <- factor(HHS$`Education level`, levels = c("Never attended school or only attended kindergarten",
+                                                                  "Grades 1 through 8 (Elementary/Middle school)",
+                                                                  "Grades 9 through 11 (Some high school)",
+                                                                  "Grade 12 or GED (High school graduate)",
+                                                                  "Some college or technical school", 
+                                                                  "College graduate",
+                                                                  "Graduate School (Master's degree or above)"),
+                                ordered=T)
+HHS <- HHS %>% 
+  mutate(`Education level` = recode(`Education level`, 
+                           "Never attended school or only attended kindergarten" = "Never attended school.",
+                           "Grades 1 through 8 (Elementary/Middle school)" = "Grades 1 through 8",
+                           "Grades 9 through 11 (Some high school)" = "Grades 9 through 11",
+                           "Grade 12 or GED (High school graduate)" = "High school graduate",
+                           "Graduate School (Master's degree or above)" = "Graduate School"))
+
+
+
 ggplot(data=subset(HHS, !is.na(`Education level`) & Clinic=="Open Door Health" & !is.na(Poverty)))+
   geom_bar(aes(x=`Education level`, fill=Poverty), position="fill")+
   labs(x = "Education Level", 
        y = "Percentage Impoverished for Each Level", 
        title="Relationship Between Education Level and Poverty Status") +
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1))+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size = 10))+
   scale_fill_brewer(palette="Reds")+
   scale_y_continuous(labels = scales::percent)
 
+#all clinics, poverty and relationship to expressed need
+b <- ggplot(data=subset(HHS, !is.na(Help_Category) & !is.na(Poverty)))+
+  geom_bar(aes(x=Help_Category, fill=Poverty), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need\nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size = 10))+
+  scale_fill_brewer(palette="Set2")+
+  scale_y_continuous(labels = scales::percent)
 
+#all clinics, poverty and relationship to biggest health concern
+a <- ggplot(data=subset(HHS, !is.na(Concern_Category) & !is.na(Poverty)))+
+  geom_bar(aes(x=Concern_Category, fill=Poverty), position="fill")+
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size = 10))+
+  scale_fill_brewer(palette="Set2")+
+  scale_y_continuous(labels = scales::percent)
 
+#combining both graphs into one image for report
+library(ggplot2)
+library(ggpubr)
 
+ggarrange(a, b,
+          ncol = 1, nrow = 2)
+
+#gender across clinics 
+ggplot(data=subset(HHS, !is.na(Help_Category) & !is.na(Gender)))+
+  geom_bar(aes(x=Help_Category, fill=Gender), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need \nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_y_continuous(labels = scales::percent)
+
+library(descr)
+freq(HHS$Gender)
+
+HHS2 <- subset(HHS, Clinic=="Open Door Health")
+freq(HHS2$Gender)
+
+ggplot(data=subset(HHS, !is.na(Concern_Category) & !is.na(Gender)))+
+  geom_bar(aes(x=Concern_Category, fill=Gender), position="fill")+
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_y_continuous(labels = scales::percent)
+
+#race across clinics 
+ggplot(data=subset(HHS, !is.na(Help_Category) & !is.na(Race)))+
+  geom_bar(aes(x=Help_Category, fill=Race), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need \nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Spectral")+
+  scale_y_continuous(labels = scales::percent)
+
+library(descr)
+freq(HHS$Race)
+
+HHS2 <- subset(HHS, Clinic=="Open Door Health")
+freq(HHS2$Race)
+
+ggplot(data=subset(HHS, !is.na(Concern_Category) & !is.na(Race)))+
+  geom_bar(aes(x=Concern_Category, fill=Race), position="fill")+
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Spectral")+
+  scale_y_continuous(labels = scales::percent)
+
+#age graph 
+ggplot(data = subset(HHS, !is.na(Help_Category) & !is.na(Age)))+
+  geom_boxplot(aes(x=Help_Category, y=Age, fill=Help_Category))+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need \nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10), legend.position="none")
+#this was unhelpful, not discussing it in analysis
+
+#country of birth, new variable to show if it is english-speaking or not 
+freq(HHS$`Country of Birth`)
+
+HHS <- HHS %>% 
+  mutate(English = ifelse(`Country of Birth`=="Canada"|`Country of Birth`=="United States"|`Country of Birth`=="Ghana"|`Country of Birth`=="Nigeria"|`Country of Birth`=="India"|`Country of Birth`=="Gambia"|`Country of Birth`=="Malta"|`Country of Birth`=="Zimbabwe"|
+                            `Country of Birth`=="Australia"|`Country of Birth`=="Singapore"|`Country of Birth`=="Belize"|`Country of Birth`=="New Zealand"|`Country of Birth`=="Barbados"|`Country of Birth`=="Guyana"|
+                            `Country of Birth`=="Grenada"|`Country of Birth`=="Botswana"|`Country of Birth`=="South Africa"|`Country of Birth`=="United Kingdom"|`Country of Birth`=="Philippines"|
+                            `Country of Birth`=="Bahamas"|`Country of Birth`=="Dominica"|`Country of Birth`=="Namibia"|`Country of Birth`=="Ireland"|`Country of Birth`=="US Virgin Islands","English-speaking","Non-English speaking"))
+
+#country of birth across clinics 
+ggplot(data=subset(HHS, !is.na(Help_Category) & !is.na(English)))+
+  geom_bar(aes(x=Help_Category, fill=English), position="fill")+
+  labs(x = "Category of Biggest Expressed Need", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Expressed Need \nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Set2")+
+  scale_y_continuous(labels = scales::percent)
+
+ggplot(data=subset(HHS, !is.na(Concern_Category) & !is.na(English)))+
+  geom_bar(aes(x=Concern_Category, fill=English), position="fill")+
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nAcross Clinics") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
+  scale_fill_brewer(palette="Set2")+
+  scale_y_continuous(labels = scales::percent)
+freq(HHS$English)
