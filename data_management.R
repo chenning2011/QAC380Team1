@@ -857,14 +857,15 @@ ggplot(data=subset(HHS, !is.na(Help_Category) & !is.na(Gender)))+
   scale_y_continuous(labels = scales::percent)
 
 library(descr)
+library(tidyverse)
 freq(HHS$Gender)
 
 HHS2 <- subset(HHS, Clinic=="Open Door Health")
 freq(HHS2$Gender)
 
-ggplot(data=subset(HHS, !is.na(Concern_Category) & !is.na(Gender)))+
+ggplot(data=subset(HHS2, !is.na(Concern_Category) & !is.na(Gender)))+
   geom_bar(aes(x=Concern_Category, fill=Gender), position="fill")+
-  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nAcross Clinics") +
+  labs(x = "Category of Biggest Health Concern", y = "Percentage Reporting Each Category", title="Percentage Reporting Each Category of Health Concern\nat Open Door Health") +
   theme_minimal()+
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust=1, size=10))+
   scale_fill_brewer(palette="Dark2")+
@@ -909,6 +910,10 @@ HHS <- HHS %>%
                             `Country of Birth`=="Australia"|`Country of Birth`=="Singapore"|`Country of Birth`=="Belize"|`Country of Birth`=="New Zealand"|`Country of Birth`=="Barbados"|`Country of Birth`=="Guyana"|
                             `Country of Birth`=="Grenada"|`Country of Birth`=="Botswana"|`Country of Birth`=="South Africa"|`Country of Birth`=="United Kingdom"|`Country of Birth`=="Philippines"|
                             `Country of Birth`=="Bahamas"|`Country of Birth`=="Dominica"|`Country of Birth`=="Namibia"|`Country of Birth`=="Ireland"|`Country of Birth`=="US Virgin Islands","English-speaking","Non-English speaking"))
+
+HHS %>% 
+  group_by(English, Clinic) %>% 
+  summarize(n = n()) 
 
 #country of birth across clinics 
 ggplot(data=subset(HHS, !is.na(Help_Category) & !is.na(English)))+
